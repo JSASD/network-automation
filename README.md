@@ -9,9 +9,18 @@ A set of automation scripts! Mostly for the HP ProCurve series and Cisco Catalys
 
 <br>
 
+## Requirements
+
+ - The Netmiko network automation library
+    - `python3 pip install netmiko`
+
+<br>
+
 ## General Usage
 
 Almost all of these scripts can be run at a basic level, typically you can just run `pythonScript.py -h` or `pythonScript.py --help` to get command line options (This is good if this needs to be run on a schedule)
+
+Each script uses `argparse` to accept command-line arguments.
 
 <br>
 
