@@ -12,8 +12,8 @@ from  netmiko import ConnectHandler
 import argparse
 import getpass
 
-#Import IPList
-import iplist
+#Open hpiplist file
+hpiplist = open("hpiplist.txt", "r")
 
 #Initialize parser
 parser = argparse.ArgumentParser()
@@ -63,3 +63,5 @@ def WriteMemory(givenUsername, givenPassword, givenHosts):
         net_connect.send_command_timing("write memory", strip_command=False, strip_prompt=False)
 
 WriteMemory(username, password, hosts)
+
+iplist.close()

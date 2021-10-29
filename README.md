@@ -35,7 +35,7 @@ Almost all scripts require a list of IP addresses to loop through.
 
 <br>
 
- All you need to have is have a file named iplist(.txt) with the list of IP addresses in plain text, line by line, in the same directory as the script.
+ All you need to have is have a file named hpiplist(.txt) (for HP ProCurve scripts) OR ciscoiplist(.txt) (for Cisco Catalyst Scripts) with the list of IP addresses in plain text, line by line, in the same directory as the script.
 
 Ex:
 
