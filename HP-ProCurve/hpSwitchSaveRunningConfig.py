@@ -45,7 +45,7 @@ print("Password: " + password)
 print("\n")
 
 def WriteMemory(givenUsername, givenPassword, givenHosts):
-    for host in hosts:
+    for host in givenHosts:
         #Device configuration
         device = {
             'device_type': 'hp_procurve',
