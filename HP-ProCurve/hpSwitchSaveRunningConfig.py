@@ -7,8 +7,7 @@ from netmiko.ssh_exception import NetMikoTimeoutException
 import argparse
 import getpass
 
-#Open hpiplist file
-hpiplist = open("hpiplist.txt", "r")
+
 
 #Initialize parser
 parser = argparse.ArgumentParser()
@@ -39,6 +38,9 @@ print("Password: " + password)
 print("\n")
 
 def WriteMemory(givenUsername, givenPassword, givenHosts):
+    #Open hpiplist file
+    hpiplist = open("hpiplist.txt", "r")
+    
     for host in givenHosts:
         #Device configuration
         device = {
@@ -61,10 +63,9 @@ def WriteMemory(givenUsername, givenPassword, givenHosts):
         except (NetMikoTimeoutException):
             print("\n> Timeout while connecting to device" + host)
             continue
-        
-        
-        
+    
+    #Done with file, close it
+    hpiplist.close()
 
+#Run 'WriteMemory' function to open the hpiplist.txt file and connect to each device
 WriteMemory(username, password, hpiplist)
-
-hpiplist.close()
