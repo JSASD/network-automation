@@ -1,10 +1,3 @@
-###################################
-#                                 #
-# PLEASE NOTE: THIS IS NOT TESTED #
-#                                 #
-###################################
-
-
 # hpSwitchSaveRunningConfig.py
 # Saves running configurations of HP ProCurve switches from a list of IP addresses
 
