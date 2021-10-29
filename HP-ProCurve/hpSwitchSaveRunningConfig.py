@@ -65,4 +65,4 @@ def WriteMemory(givenUsername, givenPassword, givenHosts):
 
 WriteMemory(username, password, hpiplist)
 
-iplist.close()
+hpiplist.close()
