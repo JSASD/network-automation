@@ -63,6 +63,6 @@ def WriteMemory(givenUsername, givenPassword, givenHosts):
         #Send command 'write-host'
         net_connect.send_command_timing("write memory", strip_command=False, strip_prompt=False)
 
-WriteMemory(username, password, hosts)
+WriteMemory(username, password, hpiplist)
 
 iplist.close()
