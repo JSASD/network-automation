@@ -9,7 +9,8 @@
 # Saves running configurations of HP ProCurve switches from a list of IP addresses
 
 #Import Python Libraries
-from  netmiko import ConnectHandler
+from netmiko import ConnectHandler
+from netmiko.ssh_exception import NetMikoTimeoutException
 import argparse
 import getpass
 
@@ -55,13 +56,21 @@ def WriteMemory(givenUsername, givenPassword, givenHosts):
             'use_keys': True
         }
 
-        print("\n--------> Connecting to host " + host + " <--------")
         #Connect to host
-        net_connect = ConnectHandler(**device)
+        try:
+            print("\n> Connecting to host " + host)
+            net_connect = ConnectHandler(**device)
 
-        print("\n--------> Writing configuration to memory <--------")
-        #Send command 'write-host'
-        net_connect.send_command_timing("write memory", strip_command=False, strip_prompt=False)
+            print("\n> Writing configuration to memory")
+            #Send command 'write-host'
+            net_connect.send_command_timing("write memory", strip_command=False, strip_prompt=False)
+
+        except (NetMikoTimeoutException):
+            print("\n> Timeout while connecting to device" + host)
+            continue
+        
+        
+        
 
 WriteMemory(username, password, hpiplist)
 
