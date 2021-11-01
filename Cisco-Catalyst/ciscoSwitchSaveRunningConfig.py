@@ -1,5 +1,5 @@
-# hpSwitchSaveRunningConfig.py
-# Writes running configurations of HP ProCurve switches to memory from a list of IP addresses
+# ciscoSwitchSaveRunningConfig.py
+# Saves running configurations of Cisco Catalyst switches from a list of IP addresses
 
 #Import Python Libraries
 from netmiko import ConnectHandler
@@ -9,7 +9,7 @@ import getpass
 
 
 #Initialize parser
-parser = argparse.ArgumentParser(description="Writes running configurations of HP ProCurve switches to memory from a list of IP addresses.")
+parser = argparse.ArgumentParser()
 
 #Help prompts:
 userPrompt = "Set username to log in with"
@@ -30,18 +30,24 @@ if bool(args.Username) and bool(args.Password):
 else:
     username = input(userPrompt + "\n")
     password = getpass.getpass("\n" + passPrompt + "\n")
+#Print variables to terminal
+print("\n")
+print("Username: " + username)
+print("Password: " + password)
+print("\n")
 
 def WriteMemory(givenUsername, givenPassword):
-    #Open hpiplist file
-    hpiplist = open("hpiplist.txt", "r")
+    #Open ciscoiplist file
+    ciscoiplist = open("ciscoiplist.txt", "r")
     
-    for host in hpiplist:
+    for host in ciscoiplist:
         #Device configuration
         device = {
-            'device_type': 'hp_procurve',
+            'device_type': 'cisco_ios',
             'ip': host,
-            'username': givenUsername,
-            'password': givenPassword,
+            'username': username,
+            'password': password,
+            'secret': secret,
             'use_keys': True
         }
 
@@ -51,15 +57,17 @@ def WriteMemory(givenUsername, givenPassword):
             net_connect = ConnectHandler(**device)
 
             print("\n> Writing configuration to memory")
+            #Enable executive priviledge mode
+            net_connect.enable()
             #Send command 'write-host'
             net_connect.send_command_timing("write memory", strip_command=False, strip_prompt=False)
 
         except (NetMikoTimeoutException):
-            print("\n> Timeout while connecting to device " + host)
+            print("\n> Timeout while connecting to device" + host)
             continue
     
     #Done with file, close it
-    hpiplist.close()
+    ciscoiplist.close()
 
-#Run 'WriteMemory' function to open the hpiplist.txt file and connect to each device
+#Run 'WriteMemory' function to open the ciscoiplist.txt file and connect to each device
 WriteMemory(username, password)
