@@ -47,7 +47,6 @@ def WriteMemory(givenUsername, givenPassword):
             'ip': host,
             'username': username,
             'password': password,
-            'secret': secret,
             'use_keys': True
         }
 
