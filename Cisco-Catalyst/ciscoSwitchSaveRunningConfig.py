@@ -14,10 +14,12 @@ parser = argparse.ArgumentParser()
 #Help prompts:
 userPrompt = "Set username to log in with"
 passPrompt = "Set password to log in with"
+secretPrompt = "Set secret to enable with"
 
 #Add optional arguments
-parser.add_argument("-u", "--Username", help = "Set username to log in with")
-parser.add_argument("-p", "--Password", help = "Set password to log in with")
+parser.add_argument("-u", "--Username", help = userPrompt)
+parser.add_argument("-p", "--Password", help = passPrompt)
+parser.add_argument("-s", "--Secret", help = secretPrompt)
 
 #Read arguments from command line
 args = parser.parse_args()
@@ -26,17 +28,20 @@ args = parser.parse_args()
 if bool(args.Username) and bool(args.Password):
     username = args.Username
     password = args.Password
+    secret = args.Secret
 #Otherwise, ask user for username/password for switches
 else:
     username = input(userPrompt + "\n")
     password = getpass.getpass("\n" + passPrompt + "\n")
+    secret = getpass.getpass("\n" + secretPrompt + "\n")
 #Print variables to terminal
 print("\n")
 print("Username: " + username)
 print("Password: " + password)
+print("Secret: " + secret)
 print("\n")
 
-def WriteMemory(givenUsername, givenPassword):
+def WriteMemory(givenUsername, givenPassword, givenSecret):
     #Open ciscoiplist file
     ciscoiplist = open("ciscoiplist.txt", "r")
     
@@ -45,8 +50,9 @@ def WriteMemory(givenUsername, givenPassword):
         device = {
             'device_type': 'cisco_ios',
             'ip': host,
-            'username': username,
-            'password': password,
+            'username': givenSecret,
+            'password': givenSecret,
+            'secret': givenSecret,
             'use_keys': True
         }
 
@@ -69,4 +75,4 @@ def WriteMemory(givenUsername, givenPassword):
     ciscoiplist.close()
 
 #Run 'WriteMemory' function to open the ciscoiplist.txt file and connect to each device
-WriteMemory(username, password)
+WriteMemory(username, password, secret)
