@@ -44,8 +44,10 @@ print("\n")
 def WriteMemory(givenUsername, givenPassword, givenSecret):
     #Open ciscoiplist file
     ciscoiplist = open("ciscoiplist.txt", "r")
+    #Strip newlines from file for later use
+    iplist = [s.rstrip('\n') for s in ciscoiplist]
     
-    for host in ciscoiplist:
+    for host in iplist:
         #Device configuration
         device = {
             'device_type': 'cisco_ios',
