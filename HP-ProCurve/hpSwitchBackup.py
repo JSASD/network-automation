@@ -32,7 +32,7 @@ if bool(args.Username) and bool(args.Password):
 else:
     username = input(userPrompt + "\n")
     password = getpass.getpass("\n" + passPrompt + "\n")
-    directory = input("\n" + pathPrompt + "\n")
+    directory = input("\n" + directoryPrompt + "\n")
 
 def GetConfig(givenUsername, givenPassword, givenDirectory):
     #Open hpiplist file
