@@ -1,9 +1,15 @@
-# hpSwitchBackup.py
-# Saves current running configs of HP ProCurve switches to a chosen directory
+##################################################
+# --------- network-device-port-finder --------- #
+#                                                #
+# - Saves current running configs of HP ProCurve #
+# ------- switches to a chosen directory ------- #
+#                                                #
+# ------------ JSASD Tech Department ----------- #
+##################################################
 
 #Import Python Libraries
 from netmiko import ConnectHandler
-from netmiko.ssh_exception import NetMikoTimeoutException
+from netmiko.ssh_exception import NetMikoTimeoutException, NetMikoAuthenticationException
 import argparse
 import getpass
 
@@ -62,6 +68,10 @@ def GetConfig(givenUsername, givenPassword, givenDirectory):
         except(NetMikoTimeoutException):
             print("\n> Timeout while connecting to device " + host)
             output = "Timeout while connecting to device...\n     No configuration gathered."
+        except (NetMikoAuthenticationException):
+            print("\n> Error authenticating to switch " + host + ". Did you use the right password?")
+        except:
+            print("\n> General error. Is the device working properly?")
 
         #Open file to write running config to
         save_file = open(givenDirectory + "\\" + host + "Config.txt",'w')
