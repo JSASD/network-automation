@@ -1,9 +1,15 @@
-# hpSwitchSaveRunningConfig.py
-# Writes running configurations of HP ProCurve switches to memory from a list of IP addresses
+##################################################
+# --------- hpSwitchSaveRunningConfig ---------- #
+#                                                #
+#  Writes running configurations of HP ProCurve  #
+# switches to memory from a list of IP addresses #
+#                                                #
+# ------------ JSASD Tech Department ----------- #
+##################################################
 
 #Import Python Libraries
 from netmiko import ConnectHandler
-from netmiko.ssh_exception import NetMikoTimeoutException
+from netmiko.ssh_exception import NetMikoTimeoutException, NetMikoAuthenticationException
 import argparse
 import getpass
 
@@ -16,8 +22,8 @@ userPrompt = "Set username to log in with"
 passPrompt = "Set password to log in with"
 
 #Add optional arguments
-parser.add_argument("-u", "--Username", help = "Set username to log in with")
-parser.add_argument("-p", "--Password", help = "Set password to log in with")
+parser.add_argument("-u", "--Username", help = userPrompt)
+parser.add_argument("-p", "--Password", help = passPrompt)
 
 #Read arguments from command line
 args = parser.parse_args()
@@ -54,11 +60,18 @@ def WriteMemory(givenUsername, givenPassword):
             #Send command 'write-host'
             net_connect.send_command_timing("write memory", strip_command=False, strip_prompt=False)
 
-        except (NetMikoTimeoutException):
-            print("\n> Timeout while connecting to device " + host)
+            #Disconnet from host
+            net_connect.disconnect()
+
+        except(NetMikoTimeoutException):
+            print("\n> Timeout while connecting to device " + host + ". Is the device online?")
             continue
+        except(NetMikoAuthenticationException):
+            print("\n> Error authenticating to switch " + host + ". Did you use the right password?")
+        except:
+            print("\n> General error. Is the device working properly?")
     
-    #Done with file, close it
+    #Close file
     hpiplist.close()
 
 #Run 'WriteMemory' function to open the hpiplist.txt file and connect to each device

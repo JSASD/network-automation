@@ -64,11 +64,14 @@ def GetConfig(givenUsername, givenPassword, givenDirectory):
             print("\n> Getting configuration from memory")
             #Send command 'sh run'
             output = net_connect.send_command_timing("sh run", strip_command=False, strip_prompt=False)
+
+            #Disconnect from host
+            net_connect.disconnect()
             
         except(NetMikoTimeoutException):
             print("\n> Timeout while connecting to device " + host)
             output = "Timeout while connecting to device...\n     No configuration gathered."
-        except (NetMikoAuthenticationException):
+        except(NetMikoAuthenticationException):
             print("\n> Error authenticating to switch " + host + ". Did you use the right password?")
         except:
             print("\n> General error. Is the device working properly?")
