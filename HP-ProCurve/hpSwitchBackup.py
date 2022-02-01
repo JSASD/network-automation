@@ -12,6 +12,16 @@ from netmiko import ConnectHandler
 from netmiko.ssh_exception import NetMikoTimeoutException, NetMikoAuthenticationException
 import argparse
 import getpass
+import os
+
+#Set location of current directory for reliable file opening
+__location__ = os.path.realpath(
+    os.path.join(
+        os.getcwd(),
+        os.path.dirname(
+            __file__)
+        )
+)
 
 #Initialize parser
 parser = argparse.ArgumentParser(description="Saves running configs of HP ProCurve switches from a given IP list to a given directory.")
@@ -42,7 +52,7 @@ else:
 
 def GetConfig(givenUsername, givenPassword, givenDirectory):
     #Open hpiplist file
-    hpiplist = open("hpiplist.txt", "r")
+    hpiplist = open(os.path.join(__location__, "hpiplist.txt"), "r")
     #Strip newlines from file for later use
     iplist = [s.rstrip('\n') for s in hpiplist]
 
