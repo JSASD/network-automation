@@ -26,6 +26,10 @@
     - name: Show switch and user
       debug:
         msg: "Connecting to {{ inventory_hostname }} with username: {{switch_username }}"
+    
+    - name: Show password length
+      debug:
+        msg: "Password length: {{ switch_password | length }}"
 
     - name: Disable each port
       ansible.builtin.shell: |
