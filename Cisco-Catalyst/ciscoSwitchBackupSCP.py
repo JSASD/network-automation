@@ -21,9 +21,9 @@ __location__ = os.path.realpath(
     )
 )
 # Set variables using Base64
-b64_username = "YWRtaW4="
-b64_password = "Mjk2MGxtaQ=="
-b64_sftppassword = "U3AzY2lhbFVTRlRQKg=="
+b64_username = "username"
+b64_password = "super-secret-password"
+b64_sftppassword = "super-secret-password"
 
 # Decode variables just for use in script
 #User
