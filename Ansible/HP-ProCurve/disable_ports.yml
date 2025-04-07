@@ -17,16 +17,13 @@
           }}
 
     - name: Disable each port
-      ansible.netcommon.cli_command:
-        command: |
-          configure
-          interface {{ item }}
-          disable
-          exit
-          exit
+      ansible.builtin.shell: |
+        echo "{{ switch_password }}" | sshpass -p '{{ switch_password }}' ssh -o StrictHostKeyChecking=no {{ switch_username }}@{{ inventory_hostname }} <<EOF
+        configure
+        interface {{ item }}
+        disable
+        exit
+        exit
+        write memory
+        EOF
       loop: "{{ port_list }}"
-      vars:
-        ansible_user: "{{ switch_username }}"
-        ansible_password: "{{ switch_password }}"
-        ansible_connection: network_cli
-        ansible_network_os: hp_procurve
