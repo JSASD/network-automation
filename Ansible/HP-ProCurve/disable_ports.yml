@@ -8,8 +8,8 @@
     switch_password: "{{ lookup('env', 'switch_password') }}"
     port_input: "{{ lookup('env', 'port_input') | default('1-4') }}"
     ansible_connection: ssh
-    ansible_user: switch_username
-    ansible_password: switch_password
+    ansible_user: "{{ switch_username }}"
+    ansible_password: "{{ switch_password }}"
     ansible_ssh_common_args: >-
       -o KexAlgorithms=+diffie-hellman-group14-sha1
       -o HostKeyAlgorithms=+ssh-rsa
