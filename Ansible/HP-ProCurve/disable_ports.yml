@@ -1,0 +1,35 @@
+---
+- name: Disable ports on HP ProCurve switches
+  hosts: '*'
+  gather_facts: no
+  vars:
+    switch_username: "{{ lookup('env', 'switch_username') }}"
+    switch_password: "{{ lookup('env', 'switch_password') }}"
+    port_input: "{{ lookup('env', 'port_input') | default('1-4') }}"
+
+  tasks:
+    - name: Set port list based on input
+      set_fact:
+        port_list: >-
+          {{
+            (port_input.split('-') | length == 2)
+            | ternary(
+                range(port_input.split('-')[0] | int, (port_input.split('-')[1] | int) + 1),
+                [port_input | int]
+              )
+          }}
+
+    - name: Disable each port
+      ansible.netcommon.cli_command:
+        command: |
+          configure
+          interface {{ item }}
+          disable
+          exit
+          exit
+      loop: "{{ port_list }}"
+      vars:
+        ansible_user: "{{ switch_username }}"
+        ansible_password: "{{ switch_password }}"
+        ansible_connection: network_cli
+        ansible_network_os: hp_procurve

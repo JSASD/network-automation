@@ -1,5 +1,5 @@
 ##################################################
-# --------- network-device-port-finder --------- #
+# ---------   hpswitchBackup.old.py    --------- #
 #                                                #
 # - Saves current running configs of HP ProCurve #
 # ------- switches to a chosen directory ------- #
