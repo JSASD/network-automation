@@ -2,6 +2,7 @@
 - name: Disable ports on HP ProCurve switches
   hosts: '*'
   gather_facts: no
+  become: no
   vars:
     switch_username: "{{ lookup('env', 'switch_username') }}"
     switch_password: "{{ lookup('env', 'switch_password') }}"
