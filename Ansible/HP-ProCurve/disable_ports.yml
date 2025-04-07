@@ -23,6 +23,10 @@
             range(port_input.split('-')[0] | int, port_input.split('-')[1] | int + 1) | list
           }}
 
+    - name: Show switch and user
+      debug:
+        msg: "Connecting to {{ inventory_hostname }} with username: {{switch_username }}"
+
     - name: Disable each port
       ansible.builtin.shell: |
         echo "{{ switch_password }}" | sshpass -p '{{ switch_password }}' ssh -o StrictHostKeyChecking=no {{ switch_username }}@{{ inventory_hostname }} <<EOF
