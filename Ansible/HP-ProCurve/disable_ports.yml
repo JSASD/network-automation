@@ -11,13 +11,10 @@
     - name: Set port list based on input
       set_fact:
         port_list: >-
-          {% set parts = port_input.split('-') %}
-          {% if parts | length == 2 %}
-            {{ range(parts[0] | int, (parts[1] | int) + 1) | list }}
-          {% else %}
-            [{{ parts[0] | int }}]
-          {% endif %}
-
+          {{ 
+            ([port_input | int]) if '-' not in port_input else 
+            range(port_input.split('-')[0] | int, port_input.split('-')[1] | int + 1) | list
+          }}
 
     - name: Disable each port
       ansible.netcommon.cli_command:
