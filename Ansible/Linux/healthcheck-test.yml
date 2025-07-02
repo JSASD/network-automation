@@ -13,17 +13,16 @@
   gather_facts: no
   vars:
     all_hosts: "{{ groups['all'] }}"
-    reachable: "{{ all_hosts | select('in', reachable_hosts) | list }}"
-    unreachable: "{{ all_hosts | difference(reachable) }}"
     reachable_hosts: >-
       {{
         all_hosts |
-        select(lambda h: hostvars[h].is_reachable | default(false)) |
+        selectattr('is_reachable', 'defined') |
         list
       }}
+    unreachable_hosts: "{{ all_hosts | difference(reachable_hosts) }}"
   tasks:
     - name: Show Summary
       debug:
         msg: |
-          ✅ Reachable Pis: {{ reachable | sort }}
-          ❌ Unreachable Pis: {{ unreachable | sort }}
+          ✅ Reachable Pis: {{ reachable_hosts | sort }}
+          ❌ Unreachable Pis: {{ unreachable_hosts | sort }}
