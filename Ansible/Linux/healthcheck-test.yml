@@ -1,0 +1,29 @@
+- name: Raspberry Pi Health Check
+  hosts: all
+  gather_facts: yes
+  ignore_unreachable: yes
+
+  tasks:
+    - name: Mark this host as reachable
+      set_fact:
+        is_reachable: true
+
+- name: Healthcheck Summary
+  hosts: localhost
+  gather_facts: no
+  vars:
+    all_hosts: "{{ groups['all'] }}"
+    reachable: "{{ all_hosts | select('in', reachable_hosts) | list }}"
+    unreachable: "{{ all_hosts | difference(reachable) }}"
+    reachable_hosts: >-
+      {{
+        all_hosts |
+        select(lambda h: hostvars[h].is_reachable | default(false)) |
+        list
+      }}
+  tasks:
+    - name: Show Summary
+      debug:
+        msg: |
+          ✅ Reachable Pis: {{ reachable | sort }}
+          ❌ Unreachable Pis: {{ unreachable | sort }}

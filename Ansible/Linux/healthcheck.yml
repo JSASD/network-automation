@@ -1,32 +1,37 @@
-- name: Raspberry Pi Health Check
+---
+- name: Healthcheck
   hosts: '*'
   gather_facts: yes
-  ignore_unreachable: yes  # This is key to keep going if a host is down
-  any_errors_fatal: false
+  become_user: root
 
   tasks:
-    - name: Add reachable host to success list
-      set_fact:
-        reachable_hosts: "{{ reachable_hosts | default([]) + [inventory_hostname] }}"
+    - name: Uptime
+      command: uptime -p
+      register: uptime_output
 
-- name: Log Unreachable Hosts
-  hosts: all
-  gather_facts: no
-  tasks:
-    - name: Add unreachable host to failure list
-      set_fact:
-        unreachable_hosts: "{{ unreachable_hosts | default([]) + [inventory_hostname] }}"
-      when: ansible_facts is not defined  # fallback if gather_facts failed
+    - name: Disk Usage
+      command: df -h /
+      register: disk_output
+    
+    - name: Memory Usage
+      command: free -h
+      register: memory_output
 
-- name: Summary Report
-  hosts: localhost
-  gather_facts: no
-  vars:
-    reachable_hosts: "{{ hostvars | dict2items | selectattr('value.reachable_hosts', 'defined') | map(attribute='value.reachable_hosts') | flatten | unique }}"
-    unreachable_hosts: "{{ groups['all'] | difference(reachable_hosts) }}"
-  tasks:
-    - name: Show Summary
+    - name: CPU Load
+      command: cat /proc/loadavg
+      register: load_output
+
+    - name: CPU Temp
+      command: vcgencmd measure_temp
+      register: temp_output
+      ignore_errors: yes
+
+    - name: Print Health Info
       debug:
         msg: |
-          ✅ Reachable Pis: {{ reachable_hosts | sort }}
-          ❌ Unreachable Pis: {{ unreachable_hosts | sort }}
+          Host: {{ inventory_hostname }}
+          Uptime: {{ uptime_output.stdout }}
+          Disk: {{ disk_output.stdout_lines[1] }}
+          Memory: {{ memory_output.stdout_lines[1] }}
+          Load Avg: {{ load_output.stdout }}
+          Temp: {{ temp_output.stdout | default('Not available') }}
