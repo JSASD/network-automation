@@ -11,7 +11,7 @@
     - name: Mark as reachable
       set_fact:
         is_reachable: true
-      when: not ping_result.failed
+      when: ping_result is defined and not ping_result.failed
 
 - name: Healthcheck Summary
   hosts: localhost
