@@ -1,12 +1,17 @@
-- name: Raspberry Pi Health Check
+- name: Check Raspberry Pi Reachability
   hosts: all
-  gather_facts: yes
-  ignore_unreachable: yes
-
+  gather_facts: no
   tasks:
-    - name: Mark this host as reachable
+    - name: Ping device
+      ping:
+      register: ping_result
+      ignore_unreachable: yes
+      failed_when: false
+
+    - name: Mark as reachable
       set_fact:
         is_reachable: true
+      when: not ping_result.failed
 
 - name: Healthcheck Summary
   hosts: localhost
