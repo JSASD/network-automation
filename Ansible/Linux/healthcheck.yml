@@ -1,37 +1,14 @@
----
-- name: Healthcheck
-  hosts: '*'
-  gather_facts: yes
-  become_user: root
-
+- name: Check Raspberry Pi Reachability
+  hosts: '*, localhost'
+  gather_facts: true
   tasks:
-    - name: Uptime
-      command: uptime -p
-      register: uptime_output
-
-    - name: Disk Usage
-      command: df -h /
-      register: disk_output
-    
-    - name: Memory Usage
-      command: free -h
-      register: memory_output
-
-    - name: CPU Load
-      command: cat /proc/loadavg
-      register: load_output
-
-    - name: CPU Temp
-      command: vcgencmd measure_temp
-      register: temp_output
-      ignore_errors: yes
-
-    - name: Print Health Info
-      debug:
-        msg: |
-          Host: {{ inventory_hostname }}
-          Uptime: {{ uptime_output.stdout }}
-          Disk: {{ disk_output.stdout_lines[1] }}
-          Memory: {{ memory_output.stdout_lines[1] }}
-          Load Avg: {{ load_output.stdout }}
-          Temp: {{ temp_output.stdout | default('Not available') }}
+    - block:
+        - debug:
+            var: ansible_play_hosts_all
+        - debug:
+            var: ansible_play_hosts
+        - set_fact:
+            down: "{{ ansible_play_hosts_all|difference(ansible_play_hosts) }}"
+        - debug:
+            var: down
+      run_once: true
