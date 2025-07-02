@@ -1,28 +1,14 @@
 - name: Check Raspberry Pi Reachability
-  hosts: localhost
-  gather_facts: no
-  vars:
-    all_hosts: "{{ groups['all'] }}"
-    reachable_hosts: []
-    unreachable_hosts: []
+  hosts: '*, localhost'
+  gather_facts: true
   tasks:
-    - name: Check SSH access to each Pi
-      shell: |
-        timeout 5 ssh -o BatchMode=yes -o ConnectTimeout=5 {{ hostvars[item].ansible_host | default(item) }} exit
-      loop: "{{ all_hosts }}"
-      register: ssh_check
-      ignore_errors: true
-
-    - name: Sort reachable and unreachable hosts
-      set_fact:
-        reachable_hosts: >-
-          {{ reachable_hosts + [item.item] if item.rc == 0 else reachable_hosts }}
-        unreachable_hosts: >-
-          {{ unreachable_hosts + [item.item] if item.rc != 0 else unreachable_hosts }}
-      loop: "{{ ssh_check.results }}"
-
-    - name: Show Summary
-      debug:
-        msg: |
-          ✅ Reachable Pis: {{ reachable_hosts | sort }}
-          ❌ Unreachable Pis: {{ unreachable_hosts | sort }}
+    - block:
+        - debug:
+            var: ansible_play_hosts_all
+        - debug:
+            var: ansible_play_hosts
+        - set_fact:
+            down: "{{ ansible_play_hosts_all|difference(ansible_play_hosts) }}"
+        - debug:
+            var: down
+      run_once: true
