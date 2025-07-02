@@ -1,5 +1,5 @@
 - name: Raspberry Pi Health Check
-  hosts: all
+  hosts: '*'
   gather_facts: yes
   ignore_unreachable: yes  # This is key to keep going if a host is down
   any_errors_fatal: false
